@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """In this module, we implement add function
 that implements using python annotation"""
 
