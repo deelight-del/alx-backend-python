@@ -3,6 +3,7 @@
 concat Function"""
 
 
-def concat(str1: str, str2: str):
-    """Concat function implementationn"""
+def concat(str1: str, str2: str) -> str:
+    """Concat function implementationn
+    as it returns the concat of str1 and str2"""
     return str1 + str2
