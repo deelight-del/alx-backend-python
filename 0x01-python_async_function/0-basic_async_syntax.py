@@ -9,5 +9,5 @@ import asyncio
 
 async def wait_random(max_delay: int = 10) -> float:
     random_delay = random.uniform(0, max_delay)
-    asyncio.asleep(random_delay)
-    return(random_delay)
+    await asyncio.asleep(random_delay)
+    return random_delay
