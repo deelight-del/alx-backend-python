@@ -4,9 +4,10 @@ test the utils.access_nested map"""
 
 
 import unittest
+import unittest.mock as mock
 from parameterized import parameterized
 from typing import Mapping, Sequence, Any
-from utils import access_nested_map
+from utils import access_nested_map, get_json
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -35,3 +36,24 @@ class TestAccessNestedMap(unittest.TestCase):
         """Method to test the exception of the access_nested function"""
         with self.assertRaises(KeyError) as cm:
             access_nested_map(nested_map, path)
+
+
+class TestGetJson(unittest.TestCase):
+    """Class implementation to test the
+    the requests.get method of the request class"""
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
+    def test_get_json(self, test_url: str, test_payload: Mapping) -> None:
+        # Run a context manager that mocks the requests.get
+        # method from the utils class (where it is going to be exec)
+        # check mock doc.
+        # Also mock return_value of the json method equal to test_payload.
+        with mock.patch("utils.requests.get",
+                        new_callable=mock.Mock,
+                        ) as mock_object:
+            mock_object.return_value.json.return_value = test_payload
+            test_result = get_json(test_url)
+            mock_object.assert_called_once_with(test_url)
+            self.assertEqual(test_result, test_payload)
