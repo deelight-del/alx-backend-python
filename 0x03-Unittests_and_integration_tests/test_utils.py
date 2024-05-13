@@ -47,6 +47,7 @@ class TestGetJson(unittest.TestCase):
         ("http://holberton.io", {"payload": False})
     ])
     def test_get_json(self, test_url: str, test_payload: Mapping) -> None:
+        """Method to test get_json of utils"""
         # Run a context manager that mocks the requests.get
         # method from the utils class (where it is going to be exec)
         # check mock doc.
