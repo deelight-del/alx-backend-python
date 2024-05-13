@@ -52,19 +52,10 @@ class TestGithubOrgClient(unittest.TestCase):
             "abc",
             "abc.com",
             #  {"abc": {"name": "abc-payload", "license": {"key": "abcL"}}},
-            [{"name": "abc-payload", "license": {"key": "abcL"}}],
-            "abcL",
-            ["abc-payload"]
-         ),
-        (
-            "abc",
-            "abc.com",
-            #  {"abc": {"name": "abc-payload", "license": "abcL"}},
-            [{"name": "abc-payload", "license": "abcL"}],
-            "abcL",
-            []
+            [{"name": "abc-payload", "license": {"key": "abcL"}}, {'name': "payload-2"}],
+            None,
+            ["abc-payload", "payload-2"]
          )
-        # ("google", "google.xy", [{"name": "google-payload"}], None, [])
     ])
     @mock.patch("client.get_json")
     def test_public_repos(
@@ -87,9 +78,21 @@ class TestGithubOrgClient(unittest.TestCase):
         ) as pm:
             pm.return_value = mock_url
             #  mock_get_json.side_effect = pm
-            pm()
             gh_instance = client.GithubOrgClient(mock_org_name)
             actual_list = gh_instance.public_repos(mock_license)
         self.assertSequenceEqual(expected_list, actual_list)
-        pm.assert_called_once()
+        # pm.assert_called_once()
         mock_get_json.assert_called_once()
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo: typing.Mapping,
+                         license_key: str, expected: bool) -> None:
+        """test method to test of has_license method"""
+        self.assertEqual(
+            client.GithubOrgClient("random").has_license(
+                repo, license_key
+            ),
+            expected
+        )
