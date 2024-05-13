@@ -27,3 +27,13 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.assert_called_once_with(
             "https://api.github.com/orgs/{}".format(test_url)
         )
+
+    def test_public_repos_url(self):
+        """Unit test of of the _public_repos_url of
+        the GithubOrgClient class"""
+        with mock.patch(
+            "client.GithubOrgClient.org", callable=mock.PropertyMock
+        ) as pm:
+            pm.return_value = {"repos_url": True}
+            actual_payload = client.GithubOrgClient("abc")._public_repos_url
+            self.assertTrue(actual_payload)
