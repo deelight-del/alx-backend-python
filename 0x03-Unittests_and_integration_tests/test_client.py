@@ -6,6 +6,7 @@ import unittest
 import client
 import unittest.mock as mock
 from parameterized import parameterized
+import typing
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -37,3 +38,56 @@ class TestGithubOrgClient(unittest.TestCase):
             pm.return_value = {"repos_url": True}
             actual_payload = client.GithubOrgClient("abc")._public_repos_url
             self.assertTrue(actual_payload)
+
+    @parameterized.expand([
+        (
+            "abc",
+            "abc.com",
+            #  {"abc": {"name": "abc-payload", "license": "abcL"}},
+            [{"name": "abc-payload", "license": "abcL"}],
+            None,
+            ["abc-payload"],
+         ),
+        (
+            "abc",
+            "abc.com",
+            #  {"abc": {"name": "abc-payload", "license": {"key": "abcL"}}},
+            [{"name": "abc-payload", "license": {"key": "abcL"}}],
+            "abcL",
+            ["abc-payload"]
+         ),
+        (
+            "abc",
+            "abc.com",
+            #  {"abc": {"name": "abc-payload", "license": "abcL"}},
+            [{"name": "abc-payload", "license": "abcL"}],
+            "abcL",
+            []
+         )
+        # ("google", "google.xy", [{"name": "google-payload"}], None, [])
+    ])
+    @mock.patch("client.get_json")
+    def test_public_repos(
+        self,
+        mock_org_name: str,
+        mock_url: str,
+        mock_json_payload: typing.Mapping,
+        mock_license: str,
+        expected_list: typing.List,
+        mock_get_json: mock.Mock
+        ):
+        """Method to test the public_repos method
+        of the GithubOrgClient"""
+        mock_get_json.configure_mock(**{
+            "return_value": mock_json_payload
+        })
+        with mock.patch(
+            "client.GithubOrgClient._public_repos_url",
+            callable=mock.PropertyMock, return_value=mock_url
+        ) as pm:
+            # mock_get_json.side_effect = pm
+            gh_instance = client.GithubOrgClient(mock_org_name)
+            actual_list = gh_instance.public_repos(mock_license)
+        self.assertSequenceEqual(expected_list, actual_list)
+        pm.assert_called_once()
+        mock_get_json.assert_called_once()
