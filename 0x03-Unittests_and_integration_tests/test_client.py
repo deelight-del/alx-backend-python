@@ -8,7 +8,6 @@ import unittest.mock as mock
 from parameterized import parameterized, parameterized_class
 import typing
 from fixtures import TEST_PAYLOAD
-import requests
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -147,7 +146,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 self.expected_repos
         )
 
-    def test_public_repos_with_apache_license(self):
+    def test_public_repos_with_license(self):
         """Method to test that only payload with apache2-license
         is returned when license of repos_url is given as apache-2"""
         self.assertSequenceEqual(
