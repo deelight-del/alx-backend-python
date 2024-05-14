@@ -65,6 +65,7 @@ class TestMemoize(unittest.TestCase):
     """Class implementation to test the memoize function
     and its interactions"""
     def test_memoize(self) -> None:
+        """Function to test memoize"""
         class TestClass:
             """A test class"""
             def a_method(self) -> int:
