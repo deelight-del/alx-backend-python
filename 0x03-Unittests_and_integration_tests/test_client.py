@@ -115,9 +115,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up class"""
-        # Define a side_effect function on the patch
-        # that returns different mock payloads depending on
-        # the url passed to the mock.
+        # Define a side_effect function that will be applied on the
+        # requests.get patch that returns different payloads
+        # depending on the url passed to the mock.
         # Note: The payload returned in the side_effect is a
         # mock object that has a `json.return_value` attr`.
         # This kind of construction perfectly simulates/mock the
@@ -137,7 +137,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = mock.patch('requests.get', side_effect=side_effect)
         cls.get_patcher.start()
 
-    def test_public_repos(self):
+    def test_public_repos(self) -> None:
         """Method to test that all the functions before public_repos that
         use requests.get work properly, if the right
         document is returned"""
@@ -146,7 +146,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 self.expected_repos
         )
 
-    def test_public_repos_with_license(self):
+    def test_public_repos_with_license(self) -> None:
         """Method to test that only payload with apache2-license
         is returned when license of repos_url is given as apache-2"""
         self.assertSequenceEqual(
@@ -155,6 +155,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         )
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
         """Tear down class"""
         cls.get_patcher.stop()
